@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic-Tac-Toe JS</title>
+    <style>
+      body {
+        background-color: lightgray;
+      }
+      .choices-wrapper {
+        max-width: 350px;
+        width: max-content;
+        margin: 0 auto;
+        background-color: white;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        padding: 20px;
+        border-radius: 15px;
+        display: flex;
+        columns: 3;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .choice  {
+        border: 1px solid lightgray;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: 0.5s;
+      }
+      .choice-selected{
+        border: 1px solid rgb(146, 146, 146);
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .choice:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        cursor: pointer;
+      }
+      .choice h6 , .choice-selected {
+        font-size: 1.3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="choices-wrapper">
+      <div class="choice" data-id="1">
+        <h6></h6>
+      </div>
+      <div class="choice" data-id="2">
+        <h6></h6>
+      </div>
+      <div class="choice" data-id="3">
+        <h6></h6>
+      </div>
+      <div class="choice" data-id="4">
+        <h6></h6>
+      </div>
+      <div class="choice" data-id="5">
+        <h6></h6>
+      </div>
+      <div class="choice" data-id="6">
+        <h6></h6>
+      </div>
+      <div class="choice" data-id="7">
+        <h6></h6>
+      </div>
+      <div class="choice" data-id="8">
+        <h6></h6>
+      </div>
+      <div class="choice" data-id="9">
+        <h6></h6>
+      </div>
+    </div>
+
+
+    <script>
+      
+let allMoves = [1,2,3,4,5,6,7,8,9];
+let userMoves = [];
+let robotMoves = [];
+let choices = document.querySelectorAll('.choice')
+
+choices.forEach(value =>{
+  value.onclick = function(event){
+    // Find ID
+    let id = this.getAttribute('data-id');
+    
+    // Check if the move is valid
+    if (allMoves.includes(Number(id)) && !userMoves.includes(Number(id)) && !robotMoves.includes(Number(id))) {
+      // Tick
+      this.innerHTML = '<h6>X</h6>'
+      // Push Move
+      userMoves.push(Number(id));
+      // Remove the used move
+      allMoves.splice(allMoves.indexOf(Number(id)), 1);
+      // Check Winner
+      if(checkWinner('user', userMoves)){
+        console.log('USER WIN');
+      } else if (allMoves.length === 0) {
+        console.log('DRAW');
+      } else {
+        // If the game is not over yet, it's the robot's turn
+        setTimeout(robotTurn, 500);
+      }
+    }
+  }
+})
+
+function robotTurn(){
+  // Randomly select a move for the robot
+  let randomIndex = Math.floor(Math.random() * allMoves.length);
+  let id = allMoves[randomIndex];
+  let chosenMove = document.querySelector(`.choice[data-id="${id}"]`);
+
+  // Tick
+  chosenMove.innerHTML = '<h6>O</h6>';
+  // Push Move
+  robotMoves.push(id);
+  // Remove the used move
+  allMoves.splice(randomIndex, 1);
+
+  // Check Winner
+  if(checkWinner('robot', robotMoves)){
+    console.log('ROBOT WIN');
+  } else if (allMoves.length === 0) {
+    console.log('DRAW');
+  }
+}
+
+function checkWinner(type,moves){
+  let winMoves = [
+    [1,2,3],
+    [4,5,6],
+    [7,8,9],
+    [1,4,7],
+    [2,5,8],
+    [3,6,9],
+    [1,5,9],
+    [3,5,7]
+  ]
+  let win = false;
+  for(let i = 0; i < winMoves.length; i++){
+    let move = winMoves[i];
+    if(move.every(val => moves.includes(val))){
+      win = true;
+      break;
+    }
+  }
+  return win;
+}
+
+    </script>
+  </body>
+</html>
